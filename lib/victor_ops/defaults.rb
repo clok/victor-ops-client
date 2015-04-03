@@ -1,5 +1,11 @@
 module VictorOps
   module Defaults
-    MESSAGE_TYPES = [ 'INFO', 'WARNING', 'ACKNOWLEDGMENT', 'CRITICAL', 'RECOVERY' ]
+    module MessageTypes
+      INFO = 'INFO'
+      WARN = 'WARNING'
+      ACK  = 'ACKNOWLEDGMENT'
+      CRITICAL = 'CRITICAL'
+      RECOVERY = 'RECOVERY'
+    end
   end
 end

@@ -1,10 +1,13 @@
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper'))
 
 RSpec.describe VictorOps::Client do
+  before do
+    @valid_params = { api_url: 'test url', routing_key: 'test key' }
+  end
 
   describe 'settings' do
     before do
-      @client = VictorOps::Client.new api_url: 'test url', routing_key: 'test key', option: 'this is working'
+      @client = VictorOps::Client.new @valid_params.merge(option: 'this is working')
     end
 
     it 'should return an OpenStruct hash with the input options hash as settings methods' do
@@ -20,7 +23,7 @@ RSpec.describe VictorOps::Client do
   	describe '.valid_settings?' do
       context 'settings include required items' do
         before do
-          @client = VictorOps::Client.new api_url: 'test url', routing_key: 'test key'
+          @client = VictorOps::Client.new @valid_params
         end
 
         it 'should return true' do
@@ -30,7 +33,7 @@ RSpec.describe VictorOps::Client do
 
       context 'settings do not include required items' do
         before do
-          @client = VictorOps::Client.new api_url: 'test url', routing_key: 'test key'
+          @client = VictorOps::Client.new @valid_params
           @client.settings.routing_key = nil
         end
 
@@ -39,6 +42,49 @@ RSpec.describe VictorOps::Client do
         end
       end
     end
+
+    context 'utility methods' do
+      before do
+        @client = VictorOps::Client.new @valid_params
+      end
+
+      describe '.epochtime' do
+        it 'should return the current time in intenger form' do
+          expect(@client.send(:epochtime)).to be_a(Fixnum)
+        end
+      end
+
+      describe '.critical_data' do
+        it 'should return a Hash' do
+          expect(@client.send(:critical_data, 'test')).to be_a(Hash)
+        end
+      end
+
+      describe '.warn_data' do
+        it 'should return a Hash' do
+          expect(@client.send(:warn_data, 'test')).to be_a(Hash)
+        end
+      end
+
+      describe '.info_data' do
+        it 'should return a Hash' do
+          expect(@client.send(:info_data, 'test')).to be_a(Hash)
+        end
+      end
+
+      describe '.ack_data' do
+        it 'should return a Hash' do
+          expect(@client.send(:ack_data, 'test')).to be_a(Hash)
+        end
+      end
+
+      describe '.recovery_data' do
+        it 'should return a Hash' do
+          expect(@client.send(:recovery_data, 'test')).to be_a(Hash)
+        end
+      end
+    end
+
   end
 
 end
