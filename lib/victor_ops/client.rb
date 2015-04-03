@@ -1,0 +1,1 @@
+require 'victor_ops/client/version'
