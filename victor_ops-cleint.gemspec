@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.required_ruby_version = '>= 1.9.3'
-  #s.add_dependency 'httparty', '~> 0.10', '>= 0.10.2'
-  #s.add_dependency 'highline', '~> 1.7', '>= 1.7'
+  s.add_dependency 'rest-client', '~> 1.8', '>= 1.8.0'
+  s.add_dependency 'awesome_print', '~> 1.6', '>= 1.6.1'
   s.add_development_dependency "rspec", '~> 3.0'
 
   s.license = 'MIT'
