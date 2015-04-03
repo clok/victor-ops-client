@@ -1,3 +1,4 @@
+require 'victor_ops/defaults'
 require 'victor_ops/client/version'
 require 'victor_ops/client/exceptions'
 require 'ostruct'
