@@ -1,3 +1,4 @@
+[![Gem Version](https://img.shields.io/gem/v/victor_ops-client.svg)](https://rubygems.org/gems/victor_ops-client)
 [![Build Status](https://travis-ci.org/clok/victor-ops-client.svg?branch=master)](https://travis-ci.org/clok/victor-ops-client)
 
 VictorOps Ruby Client
