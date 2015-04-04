@@ -156,6 +156,30 @@ RSpec.describe VictorOps::Client do
         end
       end
 
+      context 'the api url has a slash at the end' do
+        before do
+          @client = VictorOps::Client.new api_url: 'slashy/url/', routing_key: 'test key'
+        end
+
+        it 'should return true' do
+          expect(@client.send(:valid_settings?)).to be_truthy
+          expect(@client.settings.api_url).to_not end_with('/')
+          expect(@client.settings.api_url).to eq 'slashy/url'
+        end
+      end
+
+      context 'the api url has no slash at the end' do
+        before do
+          @client = VictorOps::Client.new api_url: 'no/slashy/url', routing_key: 'test key'
+        end
+
+        it 'should return true' do
+          expect(@client.send(:valid_settings?)).to be_truthy
+          expect(@client.settings.api_url).to_not end_with('/')
+          expect(@client.settings.api_url).to eq 'no/slashy/url'
+        end
+      end
+
       context 'settings do not include required items' do
         before do
           @client = VictorOps::Client.new @valid_params
