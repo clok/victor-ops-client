@@ -1,16 +1,18 @@
 require 'victor_ops/defaults'
 require 'victor_ops/client/version'
 require 'victor_ops/client/exceptions'
-require 'ostruct'
-require 'awesome_print'
 
 module VictorOps
   class Client
+    require 'ostruct'
+    require 'awesome_print'
+    require 'json'
     require 'rest-client'
 
     def initialize(opts)
       @settings = OpenStruct.new opts
       AwesomePrint.defaults = { indent: -2, plain: true }
+      set_default_settings
       raise VictorOps::Client::MissingSettings unless valid_settings?
     end
 
@@ -19,20 +21,77 @@ module VictorOps
     end
 
     def entity_display_name
-      true
+      if settings.entity_display_name.nil?
+        "#{settings.host}/#{settings.name}"
+      else
+        settings.entity_display_name
+      end
+    end
+
+    def entity_display_name=(str)
+      settings.entity_display_name = str
     end
 
     def monitoring_tool
-      true
+      if settings.monitoring_tool.nil?
+        "#{settings.routing_key} :: #{settings.name}"
+      else
+        settings.monitoring_tool
+      end
     end
 
-    private
+    def monitoring_tool=(str)
+      settings.monitoring_tool = str
+    end
+
+    def critical(msg)
+      post critical_payload(msg)
+    end
+
+    def warn(msg)
+      post warn_payload(msg)
+    end
+
+    def info(msg)
+      post info_payload(msg)
+    end
+
+    def ack(msg)
+      post ack_payload(msg)
+    end
+
+    def recovery(msg)
+      post recovery_payload(msg)
+    end
+
+  private
 
     def epochtime
       Time.now.to_i
     end
 
-    def critical_data(msg)
+    def set_default_settings
+      settings.host = VictorOps::Defaults::HOST if settings.host.nil?
+      settings.name = VictorOps::Defaults::NAME if settings.name.nil?
+    end
+
+    def endpoint
+      "#{settings.api_url}/#{settings.routing_key}"
+    end
+
+    def post(payload)
+      resp = nil
+      begin
+        json = RestClient.post endpoint, payload
+        resp = JSON::parse(json)
+        raise VictorOps::Client::PostFailure, "Response from VictorOps contains a failure message: #{resp.ai}" if resp['result'] == 'failure'
+      rescue Exception => e
+        raise VictorOps::Client::PostFailure, "Error posting to VictorOps: #{e}"
+      end
+      resp
+    end
+
+    def critical_payload(msg)
       {
         message_type: VictorOps::Defaults::MessageTypes::CRITICAL,
         timestamp: epochtime,
@@ -42,7 +101,7 @@ module VictorOps
       }
     end
 
-    def warn_data(msg)
+    def warn_payload(msg)
       {
         message_type: VictorOps::Defaults::MessageTypes::WARN,
         timestamp: epochtime,
@@ -52,7 +111,7 @@ module VictorOps
       }
     end
 
-    def info_data(msg)
+    def info_payload(msg)
       {
         message_type: VictorOps::Defaults::MessageTypes::INFO,
         timestamp: epochtime,
@@ -62,7 +121,7 @@ module VictorOps
       }
     end
 
-    def ack_data(msg)
+    def ack_payload(msg)
       {
         message_type: VictorOps::Defaults::MessageTypes::ACK,
         timestamp: epochtime,
@@ -72,7 +131,7 @@ module VictorOps
       }
     end
 
-    def recovery_data(msg)
+    def recovery_payload(msg)
       {
         message_type: VictorOps::Defaults::MessageTypes::RECOVERY,
         timestamp: epochtime,

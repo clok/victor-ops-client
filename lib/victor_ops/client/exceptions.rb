@@ -5,6 +5,8 @@ module VictorOps
 
     class MissingSettings < Error; end
 
+    class PostFailure < Error; end
+
     class NotYetImplemented < Error; end
 
   end
