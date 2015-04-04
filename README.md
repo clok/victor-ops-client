@@ -21,7 +21,7 @@ gem install victor_ops-client
 
 ``` ruby
 $:.unshift(File.join(File.dirname(__FILE__), "/../lib"))
-require 'victor_ops-client'
+require 'victor_ops/client'
 
 # Required for Initializing Client
 API_URL = 'https://alert.victorops.com/REST_END_POINT/API_KEY'
