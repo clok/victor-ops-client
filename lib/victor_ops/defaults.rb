@@ -10,5 +10,9 @@ module VictorOps
       CRITICAL = 'CRITICAL'
       RECOVERY = 'RECOVERY'
     end
+
+    module Daybreak
+      PATH = '/tmp/victor_ops-client.db'
+    end
   end
 end

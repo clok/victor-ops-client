@@ -17,4 +17,10 @@ RSpec.describe VictorOps::Defaults do
       expect(VictorOps::Defaults::NAME).to eq 'ruby REST client'
   	end
   end
+
+  describe 'daybreak defaults' do
+    it 'should have defaults needed for daybreak persistence' do
+      expect(VictorOps::Defaults::Daybreak::PATH).to eq '/tmp/victor_ops-client.db'
+    end
+  end
 end
