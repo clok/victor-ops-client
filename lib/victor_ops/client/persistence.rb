@@ -12,7 +12,6 @@ module VictorOps
 
     def set(key, value)
       db.set! key, value
-      db.flush
     end
 
     def retrieve(key)
@@ -20,9 +19,7 @@ module VictorOps
     end
 
     def delete(key)
-      value = db.delete key
-      db.flush
-      value
+      db.delete! key
     end
 
     def shutdown

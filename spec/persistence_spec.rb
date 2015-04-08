@@ -64,10 +64,10 @@ RSpec.describe VictorOps::Client do
       describe '.delete' do
         it 'will delete a persisted value' do
           @client.set('this will be deleted', 'woot')
-          expect(@client.delete('tester')).to eq 'woot'
+          expect(@client.delete('this will be deleted')).to eq 'woot'
           @client.shutdown
           @client = VictorOps::Client.new @valid_params.merge(persist: true, store_file: 'tmp/test.db')
-          expect(@client.delete('tester')).to be_nil
+          expect(@client.delete('this will be deleted')).to be_nil
         end
       end      
     end
