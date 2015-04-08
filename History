@@ -1,3 +1,7 @@
+== 0.2.1 2015-04-08
+
+* minor change to default naming
+
 == 0.2.0 2015-04-08
 
 * added persistence layer

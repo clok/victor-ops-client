@@ -36,7 +36,7 @@ RSpec.describe VictorOps::Client do
       end
 
       it 'should return the default name' do
-        expect(@client.monitoring_tool).to eq 'test key :: ruby REST client'
+        expect(@client.monitoring_tool).to eq 'test key::ruby REST client'
       end
     end
   end

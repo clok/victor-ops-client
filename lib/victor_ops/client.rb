@@ -34,7 +34,7 @@ module VictorOps
 
     def monitoring_tool
       if settings.monitoring_tool.nil?
-        "#{settings.routing_key} :: #{settings.name}"
+        "#{settings.routing_key}::#{settings.name}"
       else
         settings.monitoring_tool
       end
