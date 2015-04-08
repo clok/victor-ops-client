@@ -10,16 +10,14 @@ module VictorOps
     require 'json'
     require 'rest-client'
 
+    attr_accessor :settings
+
     def initialize(opts)
       @settings = OpenStruct.new opts
       AwesomePrint.defaults = { indent: -2, plain: true }
       set_default_settings
       configure_data_store unless settings.persist.nil?
       raise VictorOps::Client::MissingSettings unless valid_settings?
-    end
-
-    def settings
-      @settings
     end
 
     def entity_display_name
