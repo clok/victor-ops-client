@@ -7,6 +7,8 @@ module VictorOps
 
     class PostFailure < Error; end
 
+    class MissingMessageType < Error; end
+
     class NotYetImplemented < Error; end
 
   end

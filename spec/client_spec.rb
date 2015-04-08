@@ -86,7 +86,7 @@ RSpec.describe VictorOps::Client do
     end
 
     it 'should resturn the result of the post to VictorOps' do
-      resp = @client.critical('test')
+      resp = @client.critical(message: 'test')
       expect(resp).to be_a(Hash)
       expect(resp['result']).to eq 'success'
     end
@@ -99,7 +99,7 @@ RSpec.describe VictorOps::Client do
     end
 
     it 'should resturn the result of the post to VictorOps' do
-      resp = @client.warn('test')
+      resp = @client.warn(message: 'test')
       expect(resp).to be_a(Hash)
       expect(resp['result']).to eq 'success'
     end
@@ -112,7 +112,7 @@ RSpec.describe VictorOps::Client do
     end
 
     it 'should resturn the result of the post to VictorOps' do
-      resp = @client.info('test')
+      resp = @client.info(message: 'test')
       expect(resp).to be_a(Hash)
       expect(resp['result']).to eq 'success'
     end
@@ -125,7 +125,7 @@ RSpec.describe VictorOps::Client do
     end
 
     it 'should resturn the result of the post to VictorOps' do
-      resp = @client.ack('test')
+      resp = @client.ack(message: 'test')
       expect(resp).to be_a(Hash)
       expect(resp['result']).to eq 'success'
     end
@@ -138,7 +138,7 @@ RSpec.describe VictorOps::Client do
     end
 
     it 'should resturn the result of the post to VictorOps' do
-      resp = @client.recovery('test')
+      resp = @client.recovery(message: 'test')
       expect(resp).to be_a(Hash)
       expect(resp['result']).to eq 'success'
     end
@@ -188,6 +188,45 @@ RSpec.describe VictorOps::Client do
 
         it 'should return false' do
           expect(@client.send(:valid_settings?)).to be_falsey
+        end
+      end
+    end
+
+    describe '.generate_payload' do
+      before do
+        @client = VictorOps::Client.new api_url: 'http://victorops.com', routing_key: '1234'
+      end
+
+      context 'a nil hash was passed in' do
+        it 'should raise an expetion for no message_type provided' do
+          expect { @client.send(:generate_payload, nil) }.to raise_exception(VictorOps::Client::MissingMessageType)
+        end
+      end
+
+      context 'a hash without required message_type' do
+        it 'should raise an expetion for no message_type provided' do
+          expect { @client.send(:generate_payload, {stuff: 'test'}) }.to raise_exception(VictorOps::Client::MissingMessageType)
+        end
+      end
+
+      context 'a properly formed hash is passed in' do
+        it 'should return a payload hash' do
+          payload = @client.send(:generate_payload, {vo_alert_type: 'TEST'})
+          expect(payload[:message_type]).to eq 'TEST'
+          expect(payload[:state_start_time]).to be_a(Fixnum)
+          expect(payload[:entity_display_name]).to be_a(String)
+          expect(payload[:monitoring_tool]).to be_a(String)
+        end
+      end
+
+      context 'a properly formed hash is passed in with extra variables' do
+        it 'should return a payload hash' do
+          payload = @client.send(:generate_payload, {vo_alert_type: 'TEST', special_var: 'i am special'})
+          expect(payload[:message_type]).to eq 'TEST'
+          expect(payload[:special_var]).to eq 'i am special'
+          expect(payload[:state_start_time]).to be_a(Fixnum)
+          expect(payload[:entity_display_name]).to be_a(String)
+          expect(payload[:monitoring_tool]).to be_a(String)
         end
       end
     end
@@ -273,7 +312,7 @@ RSpec.describe VictorOps::Client do
 
       describe '.critical_payload' do
         it 'should return a Hash' do
-          data = @client.send(:critical_payload, 'test')
+          data = @client.send(:critical_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'CRITICAL'
           expect(data[:entity_display_name]).to_not be_nil
@@ -284,7 +323,7 @@ RSpec.describe VictorOps::Client do
 
       describe '.warn_payload' do
         it 'should return a Hash' do
-          data = @client.send(:warn_payload, 'test')
+          data = @client.send(:warn_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'WARNING'
           expect(data[:entity_display_name]).to_not be_nil
@@ -295,7 +334,7 @@ RSpec.describe VictorOps::Client do
 
       describe '.info_payload' do
         it 'should return a Hash' do
-          data = @client.send(:info_payload, 'test')
+          data = @client.send(:info_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'INFO'
           expect(data[:entity_display_name]).to_not be_nil
@@ -306,18 +345,20 @@ RSpec.describe VictorOps::Client do
 
       describe '.ack_payload' do
         it 'should return a Hash' do
-          data = @client.send(:ack_payload, 'test')
+          data = @client.send(:ack_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
           expect(data[:entity_display_name]).to_not be_nil
           expect(data[:monitoring_tool]).to_not be_nil
-          expect(data[:state_message]).to eq '"test"'
+          expect(data[:state_message]).to be_nil
+          expect(data[:ack_msg]).to eq '"test"'
+          expect(data[:ack_author]).to eq data[:monitoring_tool]
         end
       end
 
       describe '.recovery_payload' do
         it 'should return a Hash' do
-          data = @client.send(:recovery_payload, 'test')
+          data = @client.send(:recovery_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'RECOVERY'
           expect(data[:entity_display_name]).to_not be_nil
