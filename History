@@ -1,3 +1,8 @@
+== 0.2.0 2015-04-08
+
+* added persistence layer
+* ability to track and update incidents between Client runs
+
 == 0.1.0 2015-04-04
 
 * Initial deployment
