@@ -229,6 +229,18 @@ RSpec.describe VictorOps::Client do
           expect(payload[:monitoring_tool]).to be_a(String)
         end
       end
+
+      context 'a properly formed hash is passed in with nil values' do
+        it 'should return a payload hash with the nil values removed' do
+          payload = @client.send(:generate_payload, {vo_alert_type: 'TEST', special_var: 'i am special', nil_value: nil})
+          expect(payload[:message_type]).to eq 'TEST'
+          expect(payload[:special_var]).to eq 'i am special'
+          expect(payload[:state_start_time]).to be_a(Fixnum)
+          expect(payload[:entity_display_name]).to be_a(String)
+          expect(payload[:monitoring_tool]).to be_a(String)
+          expect(payload.has_key?(:nil_value)).to be_falsey
+        end
+      end
     end
 
     context 'utility methods' do
@@ -311,59 +323,81 @@ RSpec.describe VictorOps::Client do
       end
 
       describe '.critical_payload' do
-        it 'should return a Hash' do
+        it 'should return a Hash without duplicate data' do
           data = @client.send(:critical_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'CRITICAL'
           expect(data[:entity_display_name]).to_not be_nil
           expect(data[:monitoring_tool]).to_not be_nil
           expect(data[:state_message]).to eq '"test"'
+          expect(data[:message]).to be_nil
         end
       end
 
       describe '.warn_payload' do
-        it 'should return a Hash' do
+        it 'should return a Hash without duplicate data' do
           data = @client.send(:warn_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'WARNING'
           expect(data[:entity_display_name]).to_not be_nil
           expect(data[:monitoring_tool]).to_not be_nil
           expect(data[:state_message]).to eq '"test"'
+          expect(data[:message]).to be_nil
         end
       end
 
       describe '.info_payload' do
-        it 'should return a Hash' do
+        it 'should return a Hash without duplicate data' do
           data = @client.send(:info_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'INFO'
           expect(data[:entity_display_name]).to_not be_nil
           expect(data[:monitoring_tool]).to_not be_nil
           expect(data[:state_message]).to eq '"test"'
+          expect(data[:message]).to be_nil
         end
       end
 
       describe '.ack_payload' do
-        it 'should return a Hash' do
-          data = @client.send(:ack_payload, message: 'test')
-          expect(data).to be_a(Hash)
-          expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
-          expect(data[:entity_display_name]).to_not be_nil
-          expect(data[:monitoring_tool]).to_not be_nil
-          expect(data[:state_message]).to be_nil
-          expect(data[:ack_msg]).to eq '"test"'
-          expect(data[:ack_author]).to eq data[:monitoring_tool]
+        context 'no author provided' do
+          it 'should return a Hash without duplicate data' do
+            data = @client.send(:ack_payload, message: 'test')
+            expect(data).to be_a(Hash)
+            expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
+            expect(data[:entity_display_name]).to_not be_nil
+            expect(data[:monitoring_tool]).to_not be_nil
+            expect(data[:state_message]).to be_nil
+            expect(data[:ack_msg]).to eq '"test"'
+            expect(data[:ack_author]).to eq data[:monitoring_tool]
+            expect(data[:message]).to be_nil
+          end
+        end
+
+        context 'an author is provieded' do
+          it 'should return a Hash without duplicate data' do
+            data = @client.send(:ack_payload, message: 'test', author: 'test author')
+            expect(data).to be_a(Hash)
+            expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
+            expect(data[:entity_display_name]).to_not be_nil
+            expect(data[:monitoring_tool]).to_not be_nil
+            expect(data[:state_message]).to be_nil
+            expect(data[:ack_msg]).to eq '"test"'
+            expect(data[:ack_author]).to eq 'test author'
+            expect(data[:message]).to be_nil
+            expect(data[:author]).to be_nil
+          end
         end
       end
 
       describe '.recovery_payload' do
-        it 'should return a Hash' do
+        it 'should return a Hash without duplicate data' do
           data = @client.send(:recovery_payload, message: 'test')
           expect(data).to be_a(Hash)
           expect(data[:message_type]).to eql 'RECOVERY'
           expect(data[:entity_display_name]).to_not be_nil
           expect(data[:monitoring_tool]).to_not be_nil
           expect(data[:state_message]).to eq '"test"'
+          expect(data[:message]).to be_nil
         end
       end
     end

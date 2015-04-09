@@ -1,3 +1,8 @@
+== 0.3.0 2015-04-08
+
+* refactored payload generation
+
+
 == 0.2.1 2015-04-08
 
 * minor change to default naming

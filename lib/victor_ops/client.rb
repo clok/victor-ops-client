@@ -44,24 +44,24 @@ module VictorOps
       settings.monitoring_tool = str
     end
 
-    def critical(msg)
-      post critical_payload(msg)
+    def critical(data)
+      post critical_payload(data)
     end
 
-    def warn(msg)
-      post warn_payload(msg)
+    def warn(data)
+      post warn_payload(data)
     end
 
-    def info(msg)
-      post info_payload(msg)
+    def info(data)
+      post info_payload(data)
     end
 
-    def ack(msg)
-      post ack_payload(msg)
+    def ack(data)
+      post ack_payload(data)
     end
 
-    def recovery(msg)
-      post recovery_payload(msg)
+    def recovery(data)
+      post recovery_payload(data)
     end
 
   private
@@ -101,42 +101,43 @@ module VictorOps
         entity_display_name: entity_display_name,
         monitoring_tool: monitoring_tool,
       }
-      payload.merge data
+      payload.merge! data
+      payload.delete_if { |k,v| v.nil? }
     end
 
     def critical_payload(data)
       generate_payload data.merge({
         vo_alert_type: VictorOps::Defaults::MessageTypes::CRITICAL,
-        state_message: data[:message].nil? ? nil : data[:message].ai
+        state_message: data[:message].nil? ? nil : data.delete(:message).ai
       })
     end
 
     def warn_payload(data)
       generate_payload data.merge({
         vo_alert_type: VictorOps::Defaults::MessageTypes::WARN,
-        state_message: data[:message].nil? ? nil : data[:message].ai
+        state_message: data[:message].nil? ? nil : data.delete(:message).ai
       })
     end
 
     def info_payload(data)
       generate_payload data.merge({
         vo_alert_type: VictorOps::Defaults::MessageTypes::INFO,
-        state_message: data[:message].nil? ? nil : data[:message].ai
+        state_message: data[:message].nil? ? nil : data.delete(:message).ai
       })
     end
 
     def ack_payload(data)
       generate_payload data.merge({
         vo_alert_type: VictorOps::Defaults::MessageTypes::ACK,
-        ack_msg: data[:message].nil? ? nil : data[:message].ai,
-        ack_author: data[:author].nil? ? monitoring_tool : data[:author]
+        ack_msg: data[:message].nil? ? nil : data.delete(:message).ai,
+        ack_author: data[:author].nil? ? monitoring_tool : data.delete(:author)
       })
     end
 
     def recovery_payload(data)
       generate_payload data.merge({
         vo_alert_type: VictorOps::Defaults::MessageTypes::RECOVERY,
-        state_message: data[:message].nil? ? nil : data[:message].ai
+        state_message: data[:message].nil? ? nil : data.delete(:message).ai
       })
     end
 
