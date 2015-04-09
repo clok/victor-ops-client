@@ -6,7 +6,7 @@ RSpec.describe VictorOps::Defaults do
       expect(VictorOps::Defaults::MessageTypes::INFO).to eq 'INFO'
       expect(VictorOps::Defaults::MessageTypes::WARN).to eq 'WARNING'
       expect(VictorOps::Defaults::MessageTypes::CRITICAL).to eq 'CRITICAL'
-      expect(VictorOps::Defaults::MessageTypes::ACK).to eq 'ACKNOWLEDGMENT'
+      expect(VictorOps::Defaults::MessageTypes::ACK).to eq 'ACKNOWLEDGEMENT'
       expect(VictorOps::Defaults::MessageTypes::RECOVERY).to eq 'RECOVERY'
     end
   end

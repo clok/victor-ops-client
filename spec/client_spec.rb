@@ -363,7 +363,7 @@ RSpec.describe VictorOps::Client do
           it 'should return a Hash without duplicate data' do
             data = @client.send(:ack_payload, message: 'test')
             expect(data).to be_a(Hash)
-            expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
+            expect(data[:message_type]).to eql 'ACKNOWLEDGEMENT'
             expect(data[:entity_display_name]).to_not be_nil
             expect(data[:monitoring_tool]).to_not be_nil
             expect(data[:state_message]).to be_nil
@@ -377,7 +377,7 @@ RSpec.describe VictorOps::Client do
           it 'should return a Hash without duplicate data' do
             data = @client.send(:ack_payload, message: 'test', author: 'test author')
             expect(data).to be_a(Hash)
-            expect(data[:message_type]).to eql 'ACKNOWLEDGMENT'
+            expect(data[:message_type]).to eql 'ACKNOWLEDGEMENT'
             expect(data[:entity_display_name]).to_not be_nil
             expect(data[:monitoring_tool]).to_not be_nil
             expect(data[:state_message]).to be_nil

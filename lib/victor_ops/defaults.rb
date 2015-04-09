@@ -6,7 +6,7 @@ module VictorOps
     module MessageTypes
       INFO = 'INFO'
       WARN = 'WARNING'
-      ACK  = 'ACKNOWLEDGMENT'
+      ACK  = 'ACKNOWLEDGEMENT'
       CRITICAL = 'CRITICAL'
       RECOVERY = 'RECOVERY'
     end
