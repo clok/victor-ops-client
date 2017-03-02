@@ -33,7 +33,7 @@ ROUTING_KEY = 'example_routing_key'
 client = VictorOps::Client.new api_url: API_URL, routing_key: ROUTING_KEY
 
 # Send a CRITICAL alert
-client.critical 'THE DISK IS FULL!!!'
+client.critical desc: 'THE DISK IS FULL!!!'
 
 # Send a WARNING alert
 client.warn desc: 'Disk is nearing capacity', stats: `df -h`
